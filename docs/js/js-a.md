@@ -1,3 +1,5 @@
+# 原生js手写实现promise
+
 ### 用原生js手写实现promise，看了网上很多实现，最终写出自己的简易版promise，记录一下
 
 > 前言：使用及调用同原生Promise方法，只实现了then(resolve),catch(reject),finally()三个方法，不涉及Promise.race(),Promise.all();
