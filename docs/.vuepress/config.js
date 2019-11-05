@@ -18,38 +18,45 @@ module.exports = {
       {
         title: 'JS',
         children: [
-          '/js/js-a',
+          '/js/promise.md',
+          '/js/scroll-load.md',
+          '/js/amd-cmd.md',
+          '/js/evt.md'
         ]
       },
       {
-        title: 'VUE',
+        title: 'React',
         children: [
-          '/vue/vue-a',
-          '/vue/vue-b',
+          '/react/react-ts-template.md',
+          '/react/movie-db.md',
+          '/react/react-keep-alive.md'
         ]
       },
       {
-        title: 'REACT',
+        title: 'Vue',
         children: [
-          '/react/react-a',
+          '/vue/uni-app.md',
+          // '/vue/summary.md',
         ]
       },
       {
-        title: 'NODE.JS',
+        title: 'Node.js',
         children: [
-          // '/node-js',
+          '/node.js/directory-1.md',
+          '/node.js/directory-2.md',
+          '/node.js/cmd-line.md'
         ]
       },
       {
         title: '小程序',
         children: [
-          // '/mini-program',
+          '/mini-program/movie-db.md',
         ]
       },
       {
         title: '其他',
         children: [
-          // '/others',
+          '/others/web-component.md',
         ]
       },
     ]

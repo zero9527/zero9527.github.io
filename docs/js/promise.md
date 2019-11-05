@@ -123,10 +123,10 @@ f1(12)
 #### 结果：
 > then里面不报错：
 
-![图片挂了...](https://user-gold-cdn.xitu.io/2019/4/14/16a1b1b0e07e332a?w=474&h=115&f=png&s=4704)
+![](../static/images/js-promise-1.png)
 
 > then里面有报错：
 
-![图片挂了...](https://user-gold-cdn.xitu.io/2019/4/14/16a1b1bd5de9fb27?w=528&h=143&f=png&s=7646)
+![](../static/images/js-promise-2.png)
 
 到此，结束！

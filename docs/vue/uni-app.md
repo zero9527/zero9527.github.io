@@ -4,7 +4,7 @@
 项目需要，没有合适的轮子，所以，，，
 
 效果（红圈部分）：
-![](../static/images/16b7978cebd09287.png)
+![](../static/images/vue-uni-app-1.png)
 
 ## 需求
 * 日期对应星期显示
@@ -23,7 +23,7 @@
     js 中`new Date('2019/06/21')`传入一个日期，可以用来判断某个月是否有某一天。   
     **没有的话，返回下一个月一号的构造函数**；有的话返回这一天的构造函数；超出31号的则是Invalid。
 
-    ![](../static/images/16b927d945b36ac4.png)
+    ![](../static/images/vue-uni-app-2.png)
     ```js
     // 根据传入的日期构造函数获取年月日
       getYMD(time = new Date()) {
