@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Node.js折腾记二：命令行交互 | zero9527的小站</title>
+    <meta name="description" content="Just playing around">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.32133ca3.css" as="style"><link rel="preload" href="/assets/js/app.adbd36a5.js" as="script"><link rel="preload" href="/assets/js/2.8197b479.js" as="script"><link rel="preload" href="/assets/js/15.3b184ce0.js" as="script"><link rel="prefetch" href="/assets/js/10.5530b7b6.js"><link rel="prefetch" href="/assets/js/11.d330eb13.js"><link rel="prefetch" href="/assets/js/12.ce3a3211.js"><link rel="prefetch" href="/assets/js/13.467386ee.js"><link rel="prefetch" href="/assets/js/14.37ca14cc.js"><link rel="prefetch" href="/assets/js/16.b2d945f8.js"><link rel="prefetch" href="/assets/js/17.039cea77.js"><link rel="prefetch" href="/assets/js/18.4674c201.js"><link rel="prefetch" href="/assets/js/19.90da22f7.js"><link rel="prefetch" href="/assets/js/20.5b5652e9.js"><link rel="prefetch" href="/assets/js/3.9310c1b8.js"><link rel="prefetch" href="/assets/js/4.0da7d284.js"><link rel="prefetch" href="/assets/js/5.0301c4d3.js"><link rel="prefetch" href="/assets/js/6.591c608f.js"><link rel="prefetch" href="/assets/js/7.c1f99fd8.js"><link rel="prefetch" href="/assets/js/8.52816c79.js"><link rel="prefetch" href="/assets/js/9.9e112378.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.32133ca3.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">zero9527的小站</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://vuepress.vuejs.org" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  VuePress
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://github.com/zero9527" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://juejin.im/user/57c2df4175c4cd72901a8e7e" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  掘金
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://vuepress.vuejs.org" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  VuePress
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://github.com/zero9527" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><a href="https://juejin.im/user/57c2df4175c4cd72901a8e7e" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  掘金
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JS</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>React</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Vue</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>Node.js</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/node.js/directory-1.html" class="sidebar-link">Node.js折腾记一：读指定文件夹，输出该文件夹的文件树</a></li><li><a href="/node.js/directory-2.html" class="sidebar-link">Node.js折腾记一（改进）：文件夹目录树获取</a></li><li><a href="/node.js/cmd-line.html" class="active sidebar-link">Node.js折腾记二：命令行交互</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/node.js/cmd-line.html#前言" class="sidebar-link">前言</a></li><li class="sidebar-sub-header"><a href="/node.js/cmd-line.html#一、生成文件：" class="sidebar-link">一、生成文件：</a></li><li class="sidebar-sub-header"><a href="/node.js/cmd-line.html#二、执行脚本：" class="sidebar-link">二、执行脚本：</a></li></ul></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>小程序</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>其他</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="node-js折腾记二：命令行交互"><a href="#node-js折腾记二：命令行交互" aria-hidden="true" class="header-anchor">#</a> Node.js折腾记二：命令行交互</h1> <h2 id="前言"><a href="#前言" aria-hidden="true" class="header-anchor">#</a> 前言</h2> <blockquote><p>学习<code>node.js</code>生成文件、执行脚本，使用<code>CI</code>持续集成，自动构建工具之后，想要玩玩自己写点东西试试</p></blockquote> <blockquote><ul><li>命令行参数获取使用<a href="https://github.com/tj/commander.js#readme" target="_blank" rel="noopener noreferrer">commander.js<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>命令行交互使用<a href="https://github.com/SBoudrias/Inquirer.js#readme" target="_blank" rel="noopener noreferrer">Inquirer.js<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li> <li>目录树生成使用<a href="https://github.com/derycktse/treer#readme" target="_blank" rel="noopener noreferrer">treer<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></li></ul></blockquote> <p>代码：<a href="https://github.com/zero9527/node-test" target="_blank" rel="noopener noreferrer">github地址<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p> <p>目录结构：</p> <div class="language- extra-class"><pre class="language-text"><code>D:\node-test
+...
+├─index.js
+├─sh
+| └sh1.js
+├─scripts
+|    └generateComponent.js
+├─components
+|     ...
+|     ├─run-sh.js
+...
+</code></pre></div><div class="language- extra-class"><pre class="language-text"><code> D:\node-test
+├─ components
+    ├─ components-dir-tree1.json
+    ├─ file.2.js
+    ├─ file.bakeup.js
+    ├─ file.js
+    ├─ index.js
+    ├─ log.js
+    ├─ node-test-dir-tree.json
+    ├─ run-sh.js
+    ├─ test
+      └─ aa
+        ├─ bb.js
+        └─ cc
+    └─ timeFormat.js
+├─ index.js
+├─ json
+    ├─ a.json
+    └─ b.json
+├─ package-lock.json
+├─ package.json
+├─ README.md
+├─ scripts
+    └─ generateComponent.js
+└─ sh
+    └─ sh1.js
+
+</code></pre></div><h2 id="一、生成文件："><a href="#一、生成文件：" aria-hidden="true" class="header-anchor">#</a> 一、生成文件：</h2> <h4 id="npm命令："><a href="#npm命令：" aria-hidden="true" class="header-anchor">#</a> npm命令：</h4> <div class="language-json extra-class"><pre class="language-json"><code>package.json<span class="token operator">:</span>
+<span class="token punctuation">{</span>
+  ...
+  <span class="token property">&quot;scripts&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">&quot;create:comp&quot;</span><span class="token operator">:</span> <span class="token string">&quot;node scripts/generateComponent --path&quot;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="path-这个参数的值可以通过下面获取到"><a href="#path-这个参数的值可以通过下面获取到" aria-hidden="true" class="header-anchor">#</a> --path 这个参数的值可以通过下面获取到:</h4> <blockquote><p><code>--path</code> 可以自行设置，获取的时候<code>[path]</code>将作为<code>key</code>存到<code>program</code></p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> program <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'commander'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 命令参数处理</span>
+program
+  <span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token string">'0.0.1'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">option</span><span class="token punctuation">(</span><span class="token string">'-l --path [path]'</span><span class="token punctuation">,</span> <span class="token string">'list of customers in CSV file'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// node scripts/generateComponents --path inputName</span>
+<span class="token keyword">const</span> inputName <span class="token operator">=</span> program<span class="token punctuation">.</span>path<span class="token punctuation">;</span>
+<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\ninputName: '</span><span class="token punctuation">,</span>inputName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h4 id="命令行交互-inquirer-js-简单使用："><a href="#命令行交互-inquirer-js-简单使用：" aria-hidden="true" class="header-anchor">#</a> 命令行交互 inquirer.js 简单使用：</h4> <ul><li><code>name</code>：字段名, 调用then的回调参数值里可以找到匹配的name，<br></li> <li><code>message</code>：提示信息，<br></li> <li>其他的就是一些选项数据、默认值、过滤规则、校验、配置等</li></ul> <p>questions数组内一个子对象的<code>type</code>可以是：<br></p> <blockquote><p>(以下摘抄自<a href="https://github.com/SBoudrias/Inquirer.js#readme" target="_blank" rel="noopener noreferrer">Inquirer.js<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>)</p> <ul><li><code>confirm</code>: yes/no，type, name, message, [, default] 属性</li> <li><code>input</code>: 键盘输入，type, name, message, [, default, filter, validate, transformer] 属性.</li> <li><code>number</code>: type, name, message, [, default, filter, validate] 属性.</li> <li><code>rawlist</code>: 类似于ol标签，有序列表，type, name, message, choices, [, default, filter] 属性</li> <li><code>list</code>: 类似于ul标签，无序列表，type, name, message, choices, [, default, filter] 属性</li> <li><code>checkbox</code>: 多选，type, name, message, choices, [, default, filter, validate] 属性</li> <li><code>expand</code>: 展开menu，type, name, message, choices, [, default] 属性</li> <li><code>password</code>: type, name, message, mask, [, default, filter, validate] 属性.</li> <li><code>editor</code>: type, name, message, mask, [, default, filter, validate] 属性.</li></ul></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> questions <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    type<span class="token punctuation">:</span> <span class="token string">&quot;confirm&quot;</span><span class="token punctuation">,</span>
+    name<span class="token punctuation">:</span> <span class="token string">&quot;override&quot;</span><span class="token punctuation">,</span>
+    message<span class="token punctuation">:</span> <span class="token string">&quot;是否覆盖？&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+inquirer<span class="token punctuation">.</span><span class="token function">prompt</span><span class="token punctuation">(</span>questions<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>  
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>res<span class="token punctuation">.</span>override<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n文件将被覆盖！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n不覆盖已有文件！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><p>更多的属性：</p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token punctuation">{</span>
+  <span class="token comment">/* Preferred way: with promise */</span>
+  <span class="token function">filter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token comment">/* etc... */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+  <span class="token comment">/* Legacy way: with this.async */</span>
+  <span class="token function-variable function">validate</span><span class="token punctuation">:</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token parameter">input</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// Declare function as asynchronous, and save the done callback</span>
+    <span class="token keyword">var</span> done <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">async</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Do async stuff</span>
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> input <span class="token operator">!==</span> <span class="token string">'number'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// Pass the return value in the done callback</span>
+        <span class="token function">done</span><span class="token punctuation">(</span><span class="token string">'You need to provide a number'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">// Pass the return value in the done callback</span>
+      <span class="token function">done</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">3000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="生成文件-scripts-generatecomponent-js"><a href="#生成文件-scripts-generatecomponent-js" aria-hidden="true" class="header-anchor">#</a> 生成文件 scripts/generateComponent.js:</h4> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> program <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'commander'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 命令参数处理</span>
+<span class="token keyword">const</span> inquirer <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'inquirer'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// 选择</span>
+<span class="token keyword">const</span> chalk <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'chalk'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token function-variable function">log</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token parameter"><span class="token operator">...</span>text</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token operator">...</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> componentDir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'../components'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> newComp <span class="token operator">=</span> <span class="token template-string"><span class="token string">`
+const fs = require('fs');
+const path = require('path');
+
+console.log('这是一个自动生成的component');
+`</span></span><span class="token punctuation">;</span>
+
+<span class="token comment">// npm scripts不能接收参数</span>
+<span class="token comment">// 下面需要 node 运行传入参数</span>
+program
+  <span class="token punctuation">.</span><span class="token function">version</span><span class="token punctuation">(</span><span class="token string">'0.0.1'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">option</span><span class="token punctuation">(</span><span class="token string">'-l --path [path]'</span><span class="token punctuation">,</span> <span class="token string">'list of customers in CSV file'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>process<span class="token punctuation">.</span>argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// node scripts/generateComponents --path inputName</span>
+<span class="token keyword">const</span> inputName <span class="token operator">=</span> program<span class="token punctuation">.</span>path<span class="token punctuation">;</span>
+<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\ninputName: '</span><span class="token punctuation">,</span>inputName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> questions <span class="token operator">=</span> <span class="token punctuation">[</span>
+  <span class="token punctuation">{</span>
+    type<span class="token punctuation">:</span> <span class="token string">&quot;confirm&quot;</span><span class="token punctuation">,</span>
+    name<span class="token punctuation">:</span> <span class="token string">&quot;override&quot;</span><span class="token punctuation">,</span>
+    message<span class="token punctuation">:</span> <span class="token string">&quot;是否覆盖？&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token function">mkdir</span><span class="token punctuation">(</span>componentDir <span class="token operator">+</span> <span class="token template-string"><span class="token string">`\\</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>inputName<span class="token operator">||</span><span class="token string">'noname'</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">)</span>
+<span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">path</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n开始生成文件...'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    fs<span class="token punctuation">.</span><span class="token function">writeFile</span><span class="token punctuation">(</span>path<span class="token operator">+</span><span class="token string">'\\index.js'</span><span class="token punctuation">,</span> newComp<span class="token punctuation">,</span> <span class="token string">'utf-8'</span><span class="token punctuation">,</span> <span class="token parameter">err</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+      
+      <span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token string">`\n</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">\\index.js 文件创建成功！\n`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">catch</span><span class="token punctuation">(</span><span class="token parameter">err</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 创建目录</span>
+<span class="token keyword">function</span> <span class="token function">mkdir</span><span class="token punctuation">(</span><span class="token parameter">path</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">Promise</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token parameter">resolve</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>fs<span class="token punctuation">.</span><span class="token function">existsSync</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">log</span><span class="token punctuation">(</span><span class="token template-string"><span class="token string">`\n</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">: 文件夹已存在`</span></span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+      <span class="token comment">// 命令行交互</span>
+      inquirer<span class="token punctuation">.</span><span class="token function">prompt</span><span class="token punctuation">(</span>questions<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token parameter">res</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>  
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>res<span class="token punctuation">.</span>override<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n文件将被覆盖！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token function">resolve</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+          <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n不覆盖已有文件！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      fs<span class="token punctuation">.</span><span class="token function">mkdirSync</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      
+      <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\n文件夹创建成功！'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token function">resolve</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+module<span class="token punctuation">.</span>export <span class="token operator">=</span> <span class="token punctuation">{</span>
+  mkdir
+<span class="token punctuation">}</span>
+
+</code></pre></div><h4 id="命令行打印的提示"><a href="#命令行打印的提示" aria-hidden="true" class="header-anchor">#</a> 命令行打印的提示</h4> <ul><li>新文件</li></ul> <div class="language-cmd extra-class"><pre class="language-text"><code>$ npm run create:comp aa
+
+&gt; test@1.0.0 create:comp D:\node-test
+&gt; node scripts/generateComponent --path &quot;aa&quot;
+
+
+inputName:  aa
+
+文件夹创建成功！
+
+开始生成文件...
+
+D:\node-test\components\aa\index.js 文件创建成功！
+</code></pre></div><ul><li>文件已存在</li></ul> <div class="language-cmd extra-class"><pre class="language-text"><code>$ npm run create:comp aa
+
+&gt; test@1.0.0 create:comp D:\node-test
+&gt; node scripts/generateComponent --path &quot;aa&quot;
+
+
+inputName:  aa
+
+D:\node-test\components\aa: 文件夹已存在
+? 是否覆盖？ No
+
+不覆盖已有文件！
+</code></pre></div><h2 id="二、执行脚本："><a href="#二、执行脚本：" aria-hidden="true" class="header-anchor">#</a> 二、执行脚本：</h2> <blockquote><p>使用<code>child_process</code>子进程的<code>exec</code>执行脚本</p></blockquote> <blockquote><h4 id="以下内容，摘抄自node-js-中文网"><a href="#以下内容，摘抄自node-js-中文网" aria-hidden="true" class="header-anchor">#</a> 以下内容，摘抄自<a href="http://nodejs.cn/api/child_process.html#child_process_child_process" target="_blank" rel="noopener noreferrer">Node.js 中文网<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></h4> <p>默认情况下， <code>stdin</code>、 <code>stdout</code> 和 <code>stderr</code> 的管道在父 <code>Node.js</code> 进程和衍生的子进程之间建立。 这些管道具有有限的（和平台特定的）容量。 如果子进程在没有捕获输出的情况下写入超出该限制的 <code>stdout</code>，则子进程将阻塞等待管道缓冲区接受更多的数据。 这与 <code>shell</code> 中的管道的行为相同。 如果不消费输出，则使用 <code>{ stdio: 'ignore' }</code> 选项。</p></blockquote> <blockquote><p><code>child_process.spawn()</code> 方法异步地衍生子进程，且不阻塞 <code>Node.js</code> 事件循环。 <code>child_process.spawnSync()</code> 方法则以同步的方式提供等效功能，但会阻止事件循环直到衍生的进程退出或终止。</p></blockquote> <blockquote><p>为方便起见， <code>child_process</code> 模块提供了 <code>child_process.spawn()</code> 和 <code>child_process.spawnSync()</code> 的一些同步和异步的替代方法。 注意，这些替代方法中的每一个都是基于 <code>child_process.spawn()</code> 或 <code>child_process.spawnSync()</code> 实现的。</p> <ul><li><code>child_process.exec()</code>: 衍生一个 <code>shell</code> 并在该 <code>shell</code> 中运行命令，当完成时则将 <code>stdout</code> 和 <code>stderr</code> 传给回调函数。</li> <li><code>child_process.execFile()</code>: 类似于 <code>child_process.exec()</code>，除了它默认会直接衍生命令且不首先衍生 <code>shell</code>。</li> <li><code>child_process.fork()</code>: 衍生一个新的 <code>Node.js</code> 进程，并通过建立 IPC 通信通道来调用指定的模块，该通道允许在父进程与子进程之间发送消息。</li> <li><code>child_process.execSync()</code>: <code>child_process.exec()</code> 的同步版本，会阻塞 <code>Node.js</code> 事件循环。</li> <li><code>child_process.execFileSync()</code>: <code>child_process.execFile()</code> 的同步版本，会阻塞 <code>Node.js</code> 事件循环。
+对于某些用例，例如自动化的 <code>shell</code> 脚本，同步的方法可能更方便。 但是在大多数情况下，同步的方法会对性能产生重大影响，因为它会停止事件循环直到衍生的进程完成。</li></ul></blockquote> <h4 id="npm命令：-2"><a href="#npm命令：-2" aria-hidden="true" class="header-anchor">#</a> npm命令：</h4> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">package</span><span class="token punctuation">.</span>json<span class="token punctuation">:</span>
+<span class="token punctuation">{</span>
+  <span class="token operator">...</span>
+  <span class="token string">&quot;scripts&quot;</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;sh&quot;</span><span class="token punctuation">:</span> <span class="token string">&quot;node components/run-sh.js&quot;</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>命令生成 sh/sh1.js:</li></ul> <blockquote><p>使用npm命令时，需如上所示，在上面<code>package.json</code>中<code>scripts</code>配置好</p></blockquote> <div class="language-js extra-class"><pre class="language-js"><code><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> <span class="token function-variable function">isDir</span> <span class="token operator">=</span> <span class="token parameter">dir</span> <span class="token operator">=&gt;</span> fs<span class="token punctuation">.</span><span class="token function">statSync</span><span class="token punctuation">(</span>dir<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">isDirectory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">/**
+ * 返回相关的shell脚本
+ */</span>
+
+ <span class="token comment">// 打印指定目录</span>
+<span class="token keyword">function</span> <span class="token function">ls</span><span class="token punctuation">(</span><span class="token parameter">dir<span class="token operator">=</span><span class="token keyword">null</span></span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>dir<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'dir: '</span><span class="token punctuation">,</span> dir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token template-string"><span class="token string">`cd </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>dir<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> &amp;&amp; ls`</span></span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token string">&quot;ls&quot;</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * 构建前端项目
+ * @param {项目路径} dir 
+ * @param {执行的 npm 命令} cmd 
+ */</span>
+<span class="token keyword">function</span> <span class="token function">buildFE</span><span class="token punctuation">(</span><span class="token parameter">dir<span class="token punctuation">,</span> cmd</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>dir <span class="token operator">||</span> <span class="token operator">!</span><span class="token function">isDir</span><span class="token punctuation">(</span>dir<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token operator">!</span>cmd<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+  <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'build-dir: '</span><span class="token punctuation">,</span> dir<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token template-string"><span class="token string">`cd </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>dir<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> &amp;&amp; </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>cmd<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+  ls<span class="token punctuation">,</span>
+  buildFE
+<span class="token punctuation">}</span>
+</code></pre></div><ul><li>执行脚本 components/run-sh.js</li></ul> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// exec 执行shell命令</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span> exec <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'child_process'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./log'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> timeFormat <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'./timeFormat'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> <span class="token punctuation">{</span> ls<span class="token punctuation">,</span> buildFE <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'../sh/sh1.js'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// console.log('sh: ',sh);</span>
+
+<span class="token keyword">const</span> shdir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'../sh'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// 打印指定路径目录</span>
+<span class="token comment">//exec(ls('/code/react-t1'), (err, stdout, stderr) =&gt; {</span>
+<span class="token comment">//  if (err) throw err;</span>
+<span class="token comment">//  if ( stderr) log('stderr: ', stderr);</span>
+  
+<span class="token comment">//  // 执行的命令所打印的内容</span>
+<span class="token comment">//  log('stdout: ', stdout);</span>
+
+<span class="token comment">//  let nowTime = timeFormat({timestamp: new Date(), hasTime: true });</span>
+<span class="token comment">//  log('time: ', nowTime);</span>
+<span class="token comment">//})</span>
+
+
+<span class="token keyword">let</span> nowTime <span class="token operator">=</span> <span class="token function">timeFormat</span><span class="token punctuation">(</span><span class="token punctuation">{</span>timestamp<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> hasTime<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'start--time: '</span><span class="token punctuation">,</span> nowTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">exec</span><span class="token punctuation">(</span><span class="token function">buildFE</span><span class="token punctuation">(</span><span class="token string">'/code/react-t1'</span><span class="token punctuation">,</span> <span class="token string">'npm run build'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token parameter">err<span class="token punctuation">,</span> stdout<span class="token punctuation">,</span> stderr</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>err<span class="token punctuation">)</span> <span class="token keyword">throw</span> err<span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span> stderr<span class="token punctuation">)</span> <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'stderr: '</span><span class="token punctuation">,</span> stderr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">// 执行的命令所打印的内容</span>
+  <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'stdout: '</span><span class="token punctuation">,</span> stdout<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  nowTime <span class="token operator">=</span> <span class="token function">timeFormat</span><span class="token punctuation">(</span><span class="token punctuation">{</span>timestamp<span class="token punctuation">:</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> hasTime<span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'end--time: '</span><span class="token punctuation">,</span> nowTime<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+</code></pre></div><ul><li>命令行打印：</li></ul> <div class="language-cmd extra-class"><pre class="language-text"><code>$ npm run sh
+
+&gt; test@1.0.0 sh D:\node-test
+&gt; node components/run-sh.js
+
+==log== start--time:  2019-05-08 16:29:24
+==log== build-dir:  /code/react-t1
+==log== stdout:
+&gt; react-t1@0.1.0 build D:\code\react-t1
+&gt; node scripts/build.js
+
+Creating an optimized production build...
+Compiled successfully.
+
+File sizes after gzip:
+
+  62.73 KB  docs\static\js\4.1fe71077.chunk.js
+  48.9 KB   docs\static\js\7.70929cf8.chunk.js
+  14.3 KB   docs\static\js\3.fe3cf9bc.chunk.js
+  13.3 KB   docs\static\js\0.e70acbb7.chunk.js
+  3.22 KB   docs\static\js\1.6f7cac0f.chunk.js
+  3.05 KB   docs\static\js\2.ba0e413c.chunk.js
+  1.94 KB   docs\static\js\main.eb84215c.chunk.js
+  1.48 KB   docs\static\js\runtime~main.ff53614d.js
+  634 B     docs\static\css\main.fde90119.chunk.css
+  592 B     docs\static\js\8.d5307ac7.chunk.js
+  438 B     docs\static\js\9.1544082f.chunk.js
+  434 B     docs\static\css\0.451ae571.chunk.css
+
+The project was built assuming it is hosted at ./.
+You can control this with the homepage field in your package.json.
+
+The docs folder is ready to be deployed.
+
+Find out more about deployment here:
+
+  https://bit.ly/CRA-deploy
+
+
+==log== end--time:  2019-05-08 16:29:31
+==log== stderr:  { parser: &quot;babylon&quot; } is deprecated; we now treat it as { parser: &quot;babel&quot; }.
+
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/node.js/directory-2.html" class="prev">
+          Node.js折腾记一（改进）：文件夹目录树获取
+        </a></span> <span class="next"><a href="/mini-program/movie-db.html">
+          一个豆瓣电影小程序
+        </a>
+        →
+      </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.adbd36a5.js" defer></script><script src="/assets/js/2.8197b479.js" defer></script><script src="/assets/js/15.3b184ce0.js" defer></script>
+  </body>
+</html>
