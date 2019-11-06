@@ -6,7 +6,7 @@
 代码可以看 [这里](https://github.com/zero9527/react-ts-antd-template/tree/master/src/views/list)，这与 [另外一篇](https://juejin.im/post/5d3faa3a5188255d2e32c6e3) 是一样的，本文只是把这部分单独拿出来，而那篇文章的内容比较完整，基本上项目里用到的，能想到的都有了
 
 效果：
-![](../static/images/react-keep-alive-1.png)
+![](../static/images/react-keep-alive-1.gif)
 
 ## 路由
 使用 `Route` 组件的 `render` 方法代替常用的 `component` ，使得详情 `Detail` 组件挂载在 `List` 下面，即进入详情，但是列表并不会被注销；
