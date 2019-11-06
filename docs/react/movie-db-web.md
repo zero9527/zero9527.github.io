@@ -1,7 +1,7 @@
-# 豆瓣电影Movie-DoB网页版
+# 一个豆瓣电影 MovieDob 网页版
 
 ## 前言
-前面已经写了一个 [一个豆瓣电影小程序](https://juejin.im/post/5dafcf736fb9a04e2f71dc91) 的微信小程序；现在这个是 React+Typescript 的网页版
+前面已经写了一个 [一个豆瓣电影小程序](https://juejin.im/post/5dafcf736fb9a04e2f71dc91) 的微信小程序；现在这个是 React+Typescript 的网页版，基于 [这里](https://juejin.im/post/5d3faa3a5188255d2e32c6e3) 的修改版，antd 换为 antd-mobile
 
 [源码](https://github.com/zero9527/Movie-DB_web)，[在线预览](https://zero9527.github.io/Movie-DB_web/)
 
@@ -233,8 +233,162 @@ export default [
       window.removeEventListener('scroll', this._onScroll);
     }
   }
-
 ```
+
+
+## 3、代码预加载 prefetch
+webpack v4.6.0+ 的功能，[文档](https://webpack.docschina.org/guides/code-splitting/#%E9%A2%84%E5%8F%96-%E9%A2%84%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9D%97-prefetch-preload-module-)
+
+在首页路由，浏览器空闲时下载代码，从首页进入详情页时直接从缓存中读取，没有白屏
+
+![](../static/images/react-movie-db-web-1.png)
+
+使用如：
+```js
+const Detail = Loadable(() => import(/* webpackPrefetch: true */ '@/views/movie-detail'));
+```
+
+路由：
+```js
+// src/routes/home.tsx
+import AuthRoute from '@/routes/auth-route';
+import * as React from 'react';
+import Loadable from '@loadable/component';
+
+const Home = Loadable(() => import('@/views/home'));
+const SearchList = Loadable(() => import('@/views/search-list'));
+const Detail = Loadable(() => import(/* webpackPrefetch: true */ '@/views/movie-detail'));
+
+// home
+export default [
+  <AuthRoute 
+    key="search"
+    path="/search"
+    render={() => (
+      <SearchList>
+        <AuthRoute 
+          exact={true} 
+          path="/search/movie-detail/:id" 
+          component={Detail} 
+        />
+      </SearchList>
+    )}
+  />,
+  <AuthRoute 
+    key="home" 
+    path="/" 
+    render={() => (
+      <Home>
+        <AuthRoute 
+          exact={true} 
+          path="/movie-detail/:id" 
+          component={Detail} 
+        />
+      </Home>
+    )}
+  />
+]
+```
+
+
+## 4、定位 position: sticky;
+
+根据父元素的内容位置定位，会被限制在 `padding` 内，可以用 `margin` 负边距或者 `transform` 等改变位置；
+
+### 4.1 回到顶部按钮
+
+父元素有 `padding: 10px 20px;`，子元素设置  `position: sticky; bottom: 0; left: 100%;` ，但是会被限制在 `padding` 的范围内，原来是使用 `bottom: 0; rihgt: 0;` 的，但是 `right: 0;` 不起作用。。。所以用 `margin-right: -10px` 修改一下位置
+
+> `CSS.supports('position', 'sticky')` 可以判断浏览器是否支持 `position: sticky;`
+
+![](../static/images/react-movie-db-web-2.png)
+
+
+`<TopBtn />` 样式:
+```scss
+// src/components/scrollToTop/scrollToTop.scss
+.top-btn {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 20px;
+  border-radius: 100px;
+  border: 1px solid #eee;
+  background: #fff;
+  box-shadow: 0 2px 10px -1px rgba(0, 0, 0, 0.1);
+  z-index: 9;
+  &:active {
+    background: #eee;
+  }
+}
+.top-btn-fixed {
+  position: fixed;
+  right: 20px;
+  @extend .top-btn;
+}
+
+.top-btn-sticky {
+  position: sticky;
+  left: 100%;
+  margin-right: -10px;
+  @extend .top-btn;
+}
+```
+
+`<TopBtn />` 组件: 
+```js
+// src/components/scrollToTop/index.tsx
+import * as React from 'react';
+import styles from './scrollToTop.scss';
+
+const { useState, useEffect } = React;
+
+/**
+ * scrollToTop
+ */
+function scrollToTop() {
+  const [showBtn, setShowBtn] = useState(false);
+
+  useEffect(() => {
+    const height = window.innerHeight;
+
+    // 滚动距离大于一屏高度则显示，否则隐藏
+    setShowBtn(() => (
+      document.body.scrollTop >= height
+      || document.documentElement.scrollTop >= height
+    ));
+  }, [document.body.scrollTop, document.documentElement.scrollTop]);
+
+  function toTop() {
+    if (window.scroll) {
+      window.scroll({ top: 0, left: 0, behavior: 'smooth' });
+      
+    } else {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+  }
+
+  return (
+    <div 
+      className={
+        CSS.supports('position', 'sticky') 
+          ? styles['top-btn-sticky'] 
+          : styles['top-btn-fixed']
+      } 
+      style={{visibility: showBtn ? 'visible' : 'hidden'}}
+      onClick={toTop}
+    >
+      <i className="iconfont icon-arrow-upward-outline" />
+    </div>
+  );
+}
+
+export default scrollToTop;
+```
+
 
 ## 最后
 其他的没什么，项目本身也不复杂；框架用的是之前搭的 React+Typescript+antd-mobile，axios/css-modules/sass 等等这些都是标配啦；东西不多，原来的是 antd 这个是移动端所以换成 antd-mobile

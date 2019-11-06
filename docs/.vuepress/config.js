@@ -28,7 +28,7 @@ module.exports = {
         title: 'React',
         children: [
           '/react/react-ts-template.md',
-          '/react/movie-db.md',
+          '/react/movie-db-web.md',
           '/react/react-keep-alive.md'
         ]
       },
