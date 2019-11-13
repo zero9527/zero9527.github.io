@@ -126,11 +126,8 @@ export default [
         }
         <div 
           className={`${styles['home-content']} center-content`}
-          style={{ 
-            display: this.isDetailPage() 
-            ? 'none' 
-            : 'block' 
-          }}>
+          style={{display: this.isDetailPage() ? 'none' : 'block'}}
+        >
           <section className={styles['movie-block']}>
             <div className={styles['block-title']}>
               <span className={`${styles['title-item']} ${movieLineStatus === 0 && styles['title-active']}`}
@@ -148,7 +145,11 @@ export default [
             )}
           </section>
     
-          <MovieTop250 isLoading={isLoading} movieTop250={movieTop250} toDetail={(id: string) => this.toDetail(id)} />
+          <MovieTop250 
+            isLoading={isLoading} 
+            movieTop250={movieTop250} 
+            toDetail={(id: string) => this.toDetail(id)} 
+          />
     
           {isLoading && <Loading />}
 
@@ -387,6 +388,235 @@ function scrollToTop() {
 }
 
 export default scrollToTop;
+```
+
+
+## 5、状态管理 mobx
+```
+yarn add mobx mobx-react
+```
+相对 redux 来说，mobx 概念少，写法简单使用也简单；类组件使用装饰器，函数组件使用同名函数
+
+* @observable: 声明数据 state 
+* @computed: 计算属性，可以从对象或数组中取出需要的数据
+* @action: 动作函数，可以直接写异步函数
+* runInAction: 注意没有 `@`，不是装饰器；在 `@action` 装饰的函数内部修改 `state`，如下面 `setTimeout` 内修改数据
+* flow: 返回一个生成器 generator 函数，用 `function */yield` 代替 `async/await`（这两个其实是他们的语法糖），不需要使用 `@action/runInAction`
+* @inject('homeStore'): 将 `homeStore` 注入到组件
+* @observer: 函数/装饰器可以用来将 React 组件转变成响应式组件。 它用 mobx.autorun 包装了组件的 render 函数以确保任何组件渲染中使用的数据变化时都可以强制刷新组件。observer 是由单独的 mobx-react 包提供的。
+
+
+**其他的配置：**
+* 下载插件
+  ```
+  yarn add babel-plugin-transform-decorators-legacy -D
+  ```
+* 然后在 .babelrc: 使用装饰器
+  ```
+  "plugins": ["transform-decorators-legacy"]
+  ```
+* tsconfig.json: 使用装饰器
+  ```
+  "compilerOptions": {
+    "experimentalDecorators": true,
+  }
+  ```
+
+### 5.1 项目入口
+使用 `Provider` 包括项目
+```js
+import { Provider } from 'mobx-react';
+```
+
+```js
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
+
+import { Provider } from 'mobx-react';
+import store from './store';
+import AxiosConfig from './api';
+import Router from './router';
+import './index.scss';
+import registerServiceWorker from './registerServiceWorker'; 
+
+const Loading = () => (<div>loading...</div>);
+
+AxiosConfig(); // 初始化 axios
+
+ReactDOM.render(
+  <React.Suspense fallback={<Loading />}>
+    <Provider {...store}>
+      <Router />
+    </Provider>
+  </React.Suspense>,
+  document.getElementById('root') as HTMLElement
+);
+
+registerServiceWorker();
+```
+
+### 5.2 模块 
+```js
+// src/store/home.ts
+import * as mobx from 'mobx';
+
+// 禁止在 action 外直接修改 state 
+mobx.configure({ enforceActions: "observed"});
+const { observable, action, computed, runInAction } = mobx;
+
+let cache = sessionStorage.getItem('homeStore');
+
+// 初始化数据
+let initialState = {
+  count: 0,
+  data: {
+    time: '2019-11-08'
+  },
+};
+
+// 缓存数据
+if (cache) {
+  initialState = {
+    ...initialState,
+    ...JSON.parse(cache)
+  }
+}
+
+class Home {
+  @observable
+  public count = initialState.count;
+
+  @observable
+  public data = initialState.data;
+
+  @computed
+  public get getTime() {
+    return this.data.time;
+  }
+
+  @action
+  public setCount = (_count: number) => {
+    this.count = _count;
+  }
+
+  @action
+  public setCountAsync = (_count: number) => {
+    setTimeout(() => {
+      runInAction(() => {
+        this.count = _count;
+      })
+    }, 1000);
+  }
+
+  // public setCountFlow = flow(function *(_count: number) {
+  //   yield setTimeout(() => {}, 1000);
+  //   this.count = _count;
+  // })
+}
+
+const homeStore = new Home();
+
+mobx.spy((event) => {
+  // 数据变化后触发，数据缓存
+  if (event.type === 'reaction') {
+    const obj = mobx.toJS(homeStore);
+    sessionStorage.setItem('homeStore', JSON.stringify(obj));
+  }
+})
+
+export type homeStoreType = typeof homeStore;
+export default homeStore;
+```
+
+### 5.3 缓存
+这里使用 sessionStorage，改为其他随意
+> 数据缓存的时候，可以根据需要，匹配某些 key 去缓存，而不是所有数据；
+
+* 初始化数据
+
+    数据初始化时，如果缓存中有数据，则使用缓存的数据覆盖默认数据
+    ```js
+    let cache = sessionStorage.getItem('homeStore');
+    
+    // 初始化数据
+    let initialState = {
+      count: 0,
+      data: {
+        time: '2019-11-08'
+      },
+    };
+    
+    // 缓存数据
+    if (cache) {
+      initialState = {
+        ...initialState,
+        ...JSON.parse(cache)
+      }
+    }
+    ```
+
+* 监听数据变化
+
+    监听数据变化，在 `reaction` 后，将 `homeStore` 转化为 js 对象(只包含 state )，然后存到缓存中
+    ```js
+    const homeStore = new Home();
+    
+    mobx.spy((event) => {
+      // 数据变化后触发，数据缓存
+      if (event.type === 'reaction') {
+        const obj = mobx.toJS(homeStore);
+        sessionStorage.setItem('homeStore', JSON.stringify(obj));
+      }
+    })
+    ```
+
+### 5.4 模块管理输出
+```js
+// src/store/index.ts
+import homeStore from './home';
+
+/**
+ * 使用 mobx 状态管理
+ */
+export default {
+  homeStore
+}
+```
+
+### 5.5 组件使用
+使用装饰器在 class 上就可以了, `inject` 注入对应模块，可以多次 `inject`；
+> 注意 
+    ```
+    @inject('homeStore')
+    @observer
+    ```
+    这两个的顺序，不然会有警告
+
+```js
+// src/views/home/index.tsx
+import { observer, inject } from 'mobx-react';
+import { homeStoreType } from '@/store/home';
+...
+
+interface IProps extends RouteComponentProps {
+  history: History,
+  homeStore: homeStoreType
+}
+
+@inject('homeStore')
+@observer
+class Home extends React.Component<IProps> {
+  ...
+  
+  public componentDidMount() {
+
+    this.props.homeStore.setCount(2);
+    console.log(this.props.homeStore.count); // 2
+    
+  }
+
+  ...
+}
 ```
 
 
