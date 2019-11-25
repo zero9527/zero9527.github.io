@@ -39,7 +39,6 @@
 
 以下使用`require.js v2.3.6`示例：
 
-![](https://user-gold-cdn.xitu.io/2019/5/22/16add7885d336a32?w=654&h=230&f=png&s=16608)
 ![](../static/images/js-amd-cmd-1.png)
 
 ### 目录结构：

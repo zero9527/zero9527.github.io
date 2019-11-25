@@ -242,7 +242,7 @@ webpack v4.6.0+ 的功能，[文档](https://webpack.docschina.org/guides/code-s
 
 在首页路由，浏览器空闲时下载代码，从首页进入详情页时直接从缓存中读取，没有白屏
 
-![](../static/images/react-movie-db-web-1.png)
+![](../static/images/react-movie-db-web-3.0.png)
 
 使用如：
 ```js
@@ -302,7 +302,7 @@ export default [
 
 > `CSS.supports('position', 'sticky')` 可以判断浏览器是否支持 `position: sticky;`
 
-![](../static/images/react-movie-db-web-2.png)
+![](../static/images/react-movie-db-web-4.1.png)
 
 
 `<TopBtn />` 样式:
