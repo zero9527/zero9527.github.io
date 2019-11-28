@@ -201,6 +201,67 @@ console.log('End!');
 // Start, Promise, End, then2, then1, setTimeout1, setTimeout2;
 ```
 
+### 2.2 循环异步输出
+`for 循环` 调用 `setTimeout` 问题
+
+因为 `for 循环` 是同步的，而 `setTimeout` 是异步宏任务，每一次循环都会在任务队列添加一次  `console.log(i)` ，等到 `i===9` 的时候循环结束，这个时候 `i++` 于是 `i=10` 了，再依次调用 `console.log(i)`，所以打印 **10个10**
+
+```js
+// 10个10
+for (var i=0; i<10; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 0);
+}
+```
+
+**解决方法1: `setTimeout` 第三个参数**
+```js
+// 0-9
+for (var i=0; i<10; i++) {
+  setTimeout((j) => {
+    console.log(j);
+  }, 0, i);
+}
+```
+
+**解决方法2: 闭包**
+```js
+// 0-9
+for (var i=0; i<10; i++) {
+  (function(j) {
+    setTimeout(() => {
+      console.log(j);
+    }, 0)
+  })(i)
+}
+```
+
+**解决方法1: let**
+
+`let` 有块级作用域
+
+这样是每次 `for` 都是独立的 `i`
+```js
+// 0-9
+for (let i=0; i<10; i++) {
+  setTimeout((i) => {
+    console.log(i);
+  }, 0, i);
+}
+```
+
+这样就不行了，所有的 `i` 都是同一个 `i`
+```js
+// 10个10
+let i;
+for (i=0; i<10; i++) {
+  setTimeout(() => {
+    console.log(i);
+  }, 0);
+}
+```
+
 
 ## 3、this
 执行上下文，可以理解为是一个对象，一般函数是那个对象的 `key`，这个函数的 `this` 就是那个对象；除非 `call/bind/apply` 改变了 `this`
@@ -429,6 +490,16 @@ fn3(); // a: obj3-a, c: cc3, d: dd3
 fn3.bind(obj2, 'cc2', 'dd2');
 fn3(); // a: obj3-a, c: cc3, d: dd3
 ```
+
+### 3.3 闭包
+内部函数，私有变量
+
+* 闭包：有权访问外部作用域的私有变量的函数；
+* 被闭包引用的变量不会被自动清理(gc)
+
+也可以这么理解：函数的内部函数引用外部的私有变量，那么内部函数就是闭包；
+
+![](../static/images/js-js-review-3.3.png) 
 
 
 ## 4、对象/数组拷贝
@@ -1076,7 +1147,7 @@ console.log(stringSeparate(card, {len: 4, sep: ' '}));
 
 
 ## 8、排序算法
-暂时就搞两个，其他的了解的不深～
+暂时就搞两个～
 
 ### 8.1 冒泡排序
 一个一个对比，互换位置
@@ -1158,7 +1229,7 @@ var arr = [1,3,4,12,34,654,89,1,66,12,23,45,10,230,342,980];
 console.log(FastSort(arr));
 
 var arr1 = [{num: 10}, {num: 26}, {num: 8}, {num: 36}];
-// [ { num: 36 }, { num: 8 }, { num: 26 }, { num: 10 } ]
+// 传一个 key 作为排序字段, []
 console.log(FastSort(arr1));
 
 // [ { num: 8 }, { num: 10 }, { num: 26 }, { num: 36 } ]
