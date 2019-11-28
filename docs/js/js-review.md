@@ -242,9 +242,193 @@ a.call(obj);
 **箭头函数与普通函数的区别：**
 * 没有 `this`
 * 没有 `arguments`
-* 无法 `call/bind/apply`
+* 无法 `call/bind/apply` 切换 `this`
 * 没有原型
 * 没有构造函数，不能 `new` 
+
+### 3.2 call/apply/bind
+都是切换上下文，绑定 `this` 的
+
+#### call
+切换上下文，立即执行，参数展开非数组
+
+```js
+/**
+ * call
+ * 切换上下文，立即执行，参数展开非数组
+ * @param {*} ctx 执行上下文
+ */
+Function.prototype._call = function(ctx) {
+  ctx = ctx || {};
+  ctx.fn = this;
+
+  var args = [];
+  // 展开参数
+  // arguments[0] 是 ctx.fn 函数
+  for(var i=1; i<arguments.length; i++) {
+    args.push('arguments['+ i +']');
+  }
+
+  var res = eval('ctx.fn('+ args +')')
+  
+  delete ctx.fn;
+  return res;
+}
+
+// 测试
+var a = 'window-a';
+var obj = {
+  a: 'obj-a',
+  fn: function(c, d) {
+    console.log('a:', this.a);
+    console.log('c:', c);
+    console.log('d:', d);
+  }
+};
+var obj2 = {
+  a: 'obj2-a'
+};
+var obj3 = {
+  a: 'obj3-a'
+};
+
+// a: obj2-a, c: cc2, d: dd2
+obj.fn._call(obj2, 'cc2', 'dd2'); 
+
+// a: obj3-a, c: cc3, d: dd3
+obj.fn._call(obj3, 'cc3', 'dd3'); 
+
+// a: window-a, c: cc-null, d: dd
+obj.fn._call(null, 'cc-null', 'dd'); 
+
+// a: window-a, c: cc-undefined, d: dd
+obj.fn._call(undefined, 'cc-undefined', 'dd'); 
+```
+
+#### apply
+切换上下文，会执行，参数是数组
+
+```js
+/**
+ * apply
+ * 切换上下文，立即执行，参数为数组
+ * @param {*} ctx 执行上下文
+ */
+Function.prototype._apply = function(ctx) {
+  if (
+    arguments.length > 2 ||
+    Object.prototype.toString.call(arguments[1]) !== '[object Array]'
+  ) {
+    console.warn('参数只能一个，且为数组！');
+    return;
+  }
+  ctx = ctx || {};
+  ctx.fn = this;
+
+  var args = [];
+  for(var i=0; i<arguments[1].length; i++) {
+    args.push('arguments[1]['+ i +']');
+  }
+
+  var res = eval('ctx.fn('+ args +')');
+
+  delete ctx.fn;
+  return res;
+}
+
+// 测试
+var a = 'window-a';
+var obj = {
+  a: 'obj-a',
+  fn: function(c, d) {
+    console.log('a:', this.a);
+    console.log('c:', c);
+    console.log('d:', d);
+  }
+};
+var obj2 = {
+  a: 'obj2-a'
+};
+var obj3 = {
+  a: 'obj3-a'
+};
+
+// a: obj-a, c: cc, d: dd
+obj.fn('cc', 'dd');
+
+// a: obj2-a, c: cc2, d: dd2
+obj.fn._apply(obj2, ['cc2', 'dd2']);
+
+// a: obj3-a, c: cc3, d: dd3
+obj.fn._apply(obj3, ['cc3', 'dd3']);
+
+// a: window-a, c: cc-null, d: dd-null
+obj.fn._apply(null, ['cc-null', 'dd-null']);
+
+// a: window-a, c: cc-undefined, d: dd-undefined
+obj.fn._apply(undefined, ['cc-undefined', 'dd-undefined']);
+```
+
+#### bind
+切换上下文，返回一个新函数；不会立即执行
+
+```js
+/**
+ * bind
+ * 切换上下文，返回一个新函数；不会立即执行
+ * @param {*} ctx 执行上下文
+ */
+Function.prototype._bind = function(ctx) {
+  ctx = ctx || {};
+  ctx.fn = this;
+
+  var args = [];
+  // 展开参数
+  // arguments[0] 是 ctx.fn 函数
+  for (var i=1; i<arguments.length; i++) {
+    args.push('arguments['+ i +']');
+  }
+  
+  var res = eval('ctx.fn(' + args +')');
+
+  delete ctx.fn;
+  return function() {
+    res;
+  };
+}
+
+// 测试
+var a = 'window-a';
+var obj = {
+  a: 'obj-a',
+  fn: function(c, d) {
+    console.log('a:', this.a);
+    console.log('c:', c);
+    console.log('d:', d);
+  }
+};
+var obj2 = {
+  a: 'obj2-a'
+};
+var obj3 = {
+  a: 'obj3-a'
+};
+
+obj.fn('c', 'd'); // a: obj-a, c: c, d: d
+
+var fn1 = obj.fn._bind(null, 'cc1', 'dd1');
+fn1(); // a: window-a, c: cc1, dd1
+
+var fn2 = obj.fn._bind(obj2, 'cc2', 'dd2');
+fn2(); // a: obj2-a, c: cc2, d: dd2
+
+var fn3 = obj.fn._bind(obj3, 'cc3', 'dd3');
+fn3(); // a: obj3-a, c: cc3, d: dd3
+
+// 这个时候是不能再绑定的，所以打印的是第一次绑定的内容
+fn3.bind(obj2, 'cc2', 'dd2');
+fn3(); // a: obj3-a, c: cc3, d: dd3
+```
 
 
 ## 4、对象/数组拷贝
@@ -293,14 +477,14 @@ console.log(arr1); // [ 1, [ 4 ] ]
 ### 4.2 深拷贝
 * 判断 `objArr` 是否对象或数组，否的话直接返回；
 * 是的话，对象则给新变量初始化为对象 `{}`，数组则 `[]`，
-* 然后 循环判断每个 `key`，`key` 的值是对象或数组的话继续循环
+* 然后 循环判断每个 `key`，`key` 的值是对象或数组的话 递归执行
 
 ```js
 /**
  * 深拷贝
  * 判断 `obj` 是否对象或数组，否的话直接返回；
  * 是的话，对象则给新变量初始化为对象 `{}`，数组则 `[]`，
- * 然后 循环判断每个 `key`，`key` 的值是对象或数组的话继续循环
+ * 然后 循环判断每个 `key`，`key` 的值是对象或数组的话 递归执行
  */
 function deepClone(objArr) {
   var getType = o => Object.prototype.toString.call(o);
@@ -403,6 +587,14 @@ Array.prototype._forEach = function(cb) {
   }
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 arr._forEach(item => {
   item.a = 'aa';
   item['d'] = 'dd';
@@ -440,6 +632,14 @@ Array.prototype._filter = function(cb) {
   return newArr;
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 var arr1 = arr._filter(item => item.a === 'a1');
 var arr2 = arr._filter(item => item);
 console.log(arr1); // [ { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' } ]
@@ -469,16 +669,26 @@ Array.prototype._find = function(cb) {
     if (Boolean(cb(arr[i], i))) {
       item = arr[i];
     }
+    i++;
   }
 
   return item;
 }
 
-var item1 = arr._find(item => item.b === 'b1');
-var item2 = arr._find(item => item);
-console.log(arr);
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
+var item1 = arr._find(item => item);
+var item2 = arr._find(item => item.b === 'b1');
+var item3 = arr._find(item => item.b === 'b2');
 console.log(item1); // { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' }
 console.log(item2); // { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' }
+console.log(item3); // { a: 'a3', b: 'b2', c: [ 'c2' ], d: 'd' }
 ```
 
 ### 5.5 Array.every
@@ -503,6 +713,14 @@ Array.prototype._every = function(cb) {
 
   return result;
 }
+
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
 
 var res1 = arr._every(item => item.d === 'd');
 var res2 = arr._every(item => item.a === 'a');
@@ -533,11 +751,21 @@ Array.prototype._some = function(cb) {
   return result;
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 var has_a1 = arr._some(item => item.a === 'a1');
-var has_b = arr._some(item => item.b === 'b');
-var has_b1 = arr._some(item => item.b === 'b1');
 console.log(has_a1); // true
+
+var has_b = arr._some(item => item.b === 'b');
 console.log(has_b); // false
+
+var has_b1 = arr._some(item => item.b === 'b1');
 console.log(has_b1); // true
 ```
 
@@ -610,11 +838,339 @@ f.a(); // a
 ```
 
 
-## 7、发布订阅模式
-可以看 [这里](https://juejin.im/post/5cde23b3e51d45698161f63d)
+## 7、一些小功能
+### 7.1 数组去重
+* 简单数组按照 `item` 去重；
+* 复杂数组按照 `item[key]` 去重；
+
+```js
+/**
+ * 数组去重
+ * 简单数组按照 `item` 去重；
+ * 复杂数组按照 `item[key]` 去重；
+ * @param {*} arr 
+ * @param {*} key 去重的 key，可选
+ */
+function uniarr(arr, key) {
+  var getType = o => Object.prototype.toString.call(o);
+  if (getType(arr) !== '[object Array]') return arr;
+
+  if (key && !arr[0].hasOwnProperty(key)) {
+    console.warn(arr, '[item] 不存在key: '+key);
+    return [];
+  }
+
+  var newArr = [];
+  arr.forEach(item => {
+    var arrItem = key 
+      ? item.hasOwnProperty(key) ? item[key] : item 
+      : item;
+      
+    var hasItem = newArr.some(newitem => {
+      return (key ? newitem[key] === arrItem : newitem === arrItem)
+    });
+
+    if(!hasItem) newArr.push(item);
+  })
+
+  return newArr;
+}
+
+var list1 = [1,2,3,4,5,6,1,2,3];
+console.log(uniarr(list1)); // [ 1, 2, 3, 4, 5, 6 ]
+
+var list2 = [{id: 1}, {id: 2}, {id: 3}, {id: 2}];
+console.log(uniarr(list2, 'id')); 
+//[ { id: 1 }, { id: 2 }, { id: 3 } ]
+
+console.log(uniarr(list2, 'id1'));
+// [ { id: 1 }, { id: 2 }, { id: 3 }, { id: 2 } ] '[item] 不存在 key: id1'
+// []
+```
+
+### 7.2 数组扁平化
+* 判断 `item` 是否数组，否的话直接 push 到新数组，
+* 是的话递归 
+
+```js
+/**
+ * 数组扁平化
+ * 判断 `item` 是否数组，否的话直接 push 到新数组，
+ * 是的话递归 
+ * @param {*} arr 
+ */
+function singlearr(arr) {
+  var getType = o => Object.prototype.toString.call(o);
+  if (getType(arr) !== '[object Array]') return arr;
+
+  var newArr = [];
+  arr.forEach(item => {
+    getType(item) === '[object Array]'
+      ? newArr = newArr.concat(singlearr(item))
+      : newArr.push(item)
+  })
+
+  return newArr;
+}
+
+var list2 = [1,2,[3,4],[5,[6,7]]];
+console.log(singlearr(list2));
+```
+
+### 7.3 字符串前后去空格
+正则去前后空格最简单
+```js
+/**
+ * 字符串前后去空格
+ */
+String.prototype._trim = function() {
+  var str = this;
+  return str.replace(/^\s|\s$/g,'');
+}
+
+var str = ' st r ';
+console.log(str.split('')); // [ ' ', 's', 't', ' ', 'r', ' ' ]
+console.log(str._trim().split('')); // [ 's', 't', ' ', 'r' ]
+```
+
+### 7.4 获取 URL 参数
+* 默认返回 `url` 转化的 `key/value` 对象，
+* 有传 `key` 且 `url` 转化的对象有这个 `key` 的时候，直接返回值
+
+```js
+/**
+ * 获取 URL 参数
+ * 默认返回 `url` 转化的 `key/value` 对象，
+ * 有传 `key` 且 `url` 转化的对象有这个 `key` 的时候，直接返回值
+ * @param {*} url 形如 a=1&b=2
+ * @param {*} key 
+ */
+function urlUtil(url, key) {
+  if (typeof url !== 'string') return;
+  if (!url.includes('=')) return url;
+  
+  var obj = {};
+  url.split('&').forEach(item => {
+    const [key, value] = item.split('=');
+    obj[key] = value;
+  })
+
+  if (key && obj.hasOwnProperty(key)) {
+    return obj[key];
+  }
+
+  if (key && !obj.hasOwnProperty(key)) {
+    console.warn(`url: ${url} 中不存在 ${key} 字段`);
+    return;
+  }
+
+  return obj;
+}
+
+var url = 1;
+console.log(urlUtil(url)); // a
+
+var url1 = 'a=1';
+console.log(urlUtil(url1)); // { a: '1' }
+console.log(urlUtil(url1, 'a')); // 1
+console.log(urlUtil(url1, 'b')); // url: a=1 中不存在 b 字段 undefined
+
+var url2 = 'a=1&b=2';
+console.log(urlUtil(url2)); // { a: '1', b: '2' }
+console.log(urlUtil(url2, 'a')); // 1
+console.log(urlUtil(url2, 'b')); // 2
+```
+
+### 7.5 数字/字符串分割
+常用的如 数字千分号（3位），银行卡号（4位），身份证号（4位）等
+
+#### 数字千分号
+```js
+/**
+ * 数字千分号
+ * @param {*} num 
+ */
+function numThousand(num) {
+  if (typeof (num-0) !== 'number') return num;
+  if (num.length < 4) return num;
+
+  // 正则
+  // var newNum = (num+'').replace(
+  //   /(\d)(?=(?:\d{3})+$)/g, 
+  //   '$1,'
+  // );
+
+  // 函数
+  var newNum = (num+'').split('');
+  var arr = [];
+  do {
+    // 从后面开始分割
+    var start = newNum.length > 3 ? newNum.length - 3 : 0;
+    arr.push(newNum.splice(start, newNum.length).join(''));
+  } while(newNum.length > 0)
+
+  newNum = arr.reverse().join(',');
+  delete arr;
+
+  return newNum;
+}
+
+var num1 = 1234567;
+console.log(numThousand(num1)); // 1,234,567
+
+var num2 = 123;
+console.log(numThousand(num2)); // 123
+
+var num3 = '123';
+console.log(numThousand(num3)); // 123
+
+var num4 = '12345';
+console.log(numThousand(num4)); // 12,345
+
+var card = '62564749929292';
+// 62,564,749,929,292
+console.log(numThousand(card)); 
+```
+
+#### 字符按长度分割
+
+```js
+/**
+ * 字符按长度分割
+ * @param {*} num 数字
+ * @param {*} len 分割的长度，默认三位
+ * @param {*} sep 分隔符 默认 ','
+ */
+function stringSeparate(str, {len = 3, sep = ','} = {}) {
+  if (typeof (str+'') !== 'string') return str;
+  if (str.length < 4) return str;
+
+  var newStr = (str+'').split('');
+  var arr = []
+  do {
+    arr.push(newStr.splice(0, len).join(''));
+  } while(newStr.length > 0)
+
+  newStr = arr.join(sep);
+  delete arr;
+
+  return newStr;
+}
+
+var num1 = 1234567;
+console.log(stringSeparate(num1)); // 123,456,7
+
+var num2 = 123;
+console.log(stringSeparate(num2)); // 123
+
+var num3 = '123';
+console.log(stringSeparate(num3)); // 123
+
+var num4 = '12345';
+console.log(stringSeparate(num4)); // 123,45
+
+var card = '6217123456789012345';
+// 6217 1234 5678 9012 345
+console.log(stringSeparate(card, {len: 4, sep: ' '})); 
+```
 
 
-## 8、斐波那契数列
+## 8、排序算法
+暂时就搞两个，其他的了解的不深～
+
+### 8.1 冒泡排序
+一个一个对比，互换位置
+```js
+/**
+ * 冒泡排序
+ * @param {*} arr 
+ */
+function BubbleSort(arr){
+  const getType = o => Object.prototype.toString.call(o);
+  if (getType(arr) !== '[object Array]') return arr;
+
+  for (var i=0; i<arr.length; i++) {
+    for (var j=i+1; j<arr.length; j++) {
+      var temp = '';
+      if (arr[i] > arr[j]) {
+        temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+      }
+    }
+  }
+
+  return arr;
+}
+
+var arr = [1,3,4,12,34,5,22,8];
+console.log(arr.sort()); // [ 1, 3, 4, 5, 8, 12, 22, 34 ]
+console.log(BubbleSort(arr)); // [ 1, 3, 4, 5, 8, 12, 22, 34 ]
+```
+
+### 8.2 快速排序
+* 取一个参考值，然后将剩下的分为两份，一份大于参考值的 `left: []`，一份小于参考值 `right: []`
+* 然后分别递归 `left/right`, 返回一个 `left+mid+right` 组成的数组
+
+```js
+/**
+ * 快速排序 
+ * 取一个参考值，然后将剩下的分为两份，一份大于参考值的 `left: []`，一份小于参考值 `right: []`
+ * 然后分别递归 `left/right`, 返回一个 `left+mid+right` 组成的数组
+ * @param {*} arr 排序的数组
+ * @param {*} key 一级 key 
+ */
+function FastSort(arr, key) {
+  const getType = o => Object.prototype.toString.call(o);
+  if (getType(arr) !== '[object Array]') return arr;
+  if (arr.length <= 1) return arr;
+
+  if (key && !arr[0].hasOwnProperty(key)) {
+    console.warn(arr, '[item] 不存在key: '+key);
+    return [];
+  }
+  if (!key && getType(arr[0]) === '[object Object]') {
+    console.warn('传一个 key 作为排序字段');
+    return [];
+  }
+
+  var mid = arr.shift();
+  var left = [];
+  var right = [];
+
+  arr.forEach(item => {
+    var arrItem = key 
+      ? item.hasOwnProperty(key) ? item[key] : item
+      : item;
+    
+    var midItem = key
+      ? item.hasOwnProperty(key) ? mid[key] : mid
+      : mid;
+
+      arrItem <= midItem ? left.push(item) : right.push(item);
+  });
+
+  return FastSort(left, key).concat(mid).concat(FastSort(right, key));
+}
+
+var arr = [1,3,4,12,34,654,89,1,66,12,23,45,10,230,342,980];
+// [ 1, 1, 3, 4, 10, 12, 12, 23, 34, 45, 66, 89, 230, 342, 654, 980 ]
+console.log(FastSort(arr));
+
+var arr1 = [{num: 10}, {num: 26}, {num: 8}, {num: 36}];
+// [ { num: 36 }, { num: 8 }, { num: 26 }, { num: 10 } ]
+console.log(FastSort(arr1));
+
+// [ { num: 8 }, { num: 10 }, { num: 26 }, { num: 36 } ]
+console.log(FastSort(arr1, 'num'));
+```
+
+
+## 9、发布订阅模式
+可以看 [这里](/js/evt.html)
+
+
+## 10、斐波那契数列
 理解概念之后还是很好写的
 
 ```js
@@ -637,8 +1193,8 @@ console.log(fb2(15));
 // [ 1, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610 ]
 ```
 
-## 9、动态规划
-### 9.1 硬币问题
+## 11、动态规划
+### 11.1 硬币问题
 思路：
 1. 先求最大数的倍数 
 2. 其中两个的组合（大数优先）

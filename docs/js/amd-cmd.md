@@ -1,7 +1,6 @@
 # 前端模块化之AMD/requireJS、CMD/seaJS
 
 ## 前言
-请注意，现在是2019/05/22，这！不！是！坟！贴！，你没！有！穿！越！！<br>
 为了以后，可能需要搞一下以前的旧项目，自己也想玩玩，，，所以补一下旧时代的模块化玩法。。。
 
 代码：[github地址](https://github.com/zero9527/FE-modules-AMD-CMD)
