@@ -2,7 +2,7 @@
 
 重学一些JS基础
 
-## 面向对象
+## 1、面向对象
 ### 1.1 封装
 ```js
 function Animal(place) {
@@ -264,7 +264,9 @@ for (i=0; i<10; i++) {
 
 
 ## 3、this
-执行上下文，可以理解为是一个对象，一般函数是那个对象的 `key`，这个函数的 `this` 就是那个对象；除非 `call/bind/apply` 改变了 `this`
+执行上下文，重在 **执行** 二字；
+
+可以理解为是一个对象，一般函数是那个对象的 `key`，这个函数的 `this` 就是那个对象；除非 `call/bind/apply` 改变了 `this`
 
 ```js
 /**
@@ -600,34 +602,46 @@ console.log(obj3); // { a: 'a', b: { c: 'c1', e: { f: 'f' } }, d: [ 0, 1, [ 2 ] 
 
 
 ## 5、ES6一些数组方法的实现
-### 5.1 Array.map
+### 5.1 Array.prototype.map
 回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map):**
+```js
+var new_array = arr.map(function callback(currentValue[, index[, array]]) {
+    // Return element for new_array
+}[, thisArg])
+```
+
+**实现：**
 ```js
 /**
- * Array.map
- * 回调函数的返回值作为 item，返回一个与原数组一样长度的新数组
+ * Array.prototype.map
+ * 回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
  */
 Array.prototype._map = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var newArr = [];
 
   // while 写法
   var i = 0;
   while(i < arr.length) {
-    newArr.push(cb(arr[i], i));
+    newArr.push(cb.call(_this, arr[i], i, arr));
     i++;
   }
   
   // for 循环写法：
   // for(var i=0; i<arr.length; i++) {
-  //   newArr.push(cb(arr[i], i));
+  //   newArr.push(cb.call(_this, arr[i], i, arr));
   // }
 
   return newArr;
 }
 
-var arr1 = arr._map(item => item.a);
+var arr1 = arr._map(function(item) {
+  console.log('this: ', this); // { a: 'aaaa' }
+  return item.a
+}, { a: 'aaaa' });
 var arr2 = arr._map(item => item.b);
 var arr3 = arr._map(item => {
   return {
@@ -640,36 +654,37 @@ console.log(arr2); // [ 'b1', 'b1', 'b2', 'b3' ]
 console.log(arr3);
 ```
 
-### 5.2 Array.forEach
+### 5.2 Array.prototype.forEach
 for 循环，将 `item`、`循环序列号` 作为两个参数传给回调函数，循环直接执行回调函数
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach):**
+```
+arr.forEach(callback(currentValue [, index [, array]])[, thisArg]);
+```
+
+**实现：**
 ```js
 /**
- * Array.forEach
+ * Array.prototype.forEach
  * for 循环，将 `item`、`循环序列号` 作为两个参数传给回调函数，循环直接执行回调函数
  */
 Array.prototype._forEach = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var i = 0;
 
   while(i < arr.length) {
-    cb(arr[i], i);
+    cb.call(_this, arr[i], i, arr);
     i++;
   }
 }
 
-// 测试
-var arr = [
-  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
-  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
-  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
-  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
-];
+arr.forEach(function(item) {
+  console.log('this: ', this); // this:  { a: 'aaaa' }
 
-arr._forEach(item => {
   item.a = 'aa';
   item['d'] = 'dd';
-});
+}, { a: 'aaaa' });
 console.log(arr);
 /**
 [ { a: 'aa', b: 'b1', c: [ 'c1' ], d: 'dd' },
@@ -679,23 +694,30 @@ console.log(arr);
  */
 ```
 
-### 5.3 Array.filter
+### 5.3 Array.prototype.filter
 * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
 * 回调函数的返回值作为条件，去过滤原数组，返回符合条件的 `item` 组成的数组
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter):**
+```
+var newArray = arr.filter(callback(element[, index[, array]])[, thisArg])
+```
+
+**实现：**
 ```js
 /**
- * Array.filter
+ * Array.prototype.filter
  * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
  * 回调函数的返回值作为条件，去过滤原数组，返回符合条件的 `item` 组成的数组
  */
 Array.prototype._filter = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var newArr = [];
   var i = 0;
 
   while(i < arr.length) {
-    var res = Boolean(cb(arr[i], i));
+    var res = Boolean(cb.call(_this, arr[i], i));
     if (res) newArr.push(arr[i]);
     i++;
   }
@@ -703,15 +725,10 @@ Array.prototype._filter = function(cb) {
   return newArr;
 }
 
-// 测试
-var arr = [
-  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
-  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
-  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
-  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
-];
-
-var arr1 = arr._filter(item => item.a === 'a1');
+var arr1 = arr._filter(function(item) {
+  console.log('this: ', this); // { a: 'aaaa' }
+  return item.a === 'a1'
+}, { a: 'aaaa' });
 var arr2 = arr._filter(item => item);
 console.log(arr1); // [ { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' } ]
 console.log(arr2);
@@ -721,23 +738,30 @@ console.log(arr2);
  */
 ```
 
-### 5.4 Array.find
+### 5.4 Array.prototype.find
 * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
 * 回调函数的返回值作为条件，只找一个，返回第一个符合条件的 `item` 
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find):**
+```
+var item = arr.find(callback(element[, index[, array]])[, thisArg])
+```
+
+**实现：**
 ```js
 /**
- * Array.find
+ * Array.prototype.find
  * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
  * 回调函数的返回值作为条件，只找一个，返回第一个符合条件的 `item` 
  */
 Array.prototype._find = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var item = null;
   var i = 0;
 
   while(i < arr.length && item === null) {
-    if (Boolean(cb(arr[i], i))) {
+    if (Boolean(cb.call(_this, arr[i], i))) {
       item = arr[i];
     }
     i++;
@@ -746,91 +770,90 @@ Array.prototype._find = function(cb) {
   return item;
 }
 
-// 测试
-var arr = [
-  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
-  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
-  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
-  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
-];
-
 var item1 = arr._find(item => item);
-var item2 = arr._find(item => item.b === 'b1');
+var item2 = arr._find(function(item) {
+  console.log('this: ', this); // { a: 'aaaa' }
+  return item.b === 'b1'
+}, { a: 'aaaa' });
 var item3 = arr._find(item => item.b === 'b2');
 console.log(item1); // { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' }
 console.log(item2); // { a: 'a1', b: 'b1', c: [ 'c1' ], d: 'd' }
 console.log(item3); // { a: 'a3', b: 'b2', c: [ 'c2' ], d: 'd' }
 ```
 
-### 5.5 Array.every
+### 5.5 Array.prototype.every
 * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
 * 回调函数的返回值作为条件，判断是否所有 `item` 符合；也可以反向用 `Array.some` 找一个不符合的来替代
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every):**
+```
+var isTrue = arr.every(callback(element[, index[, array]])[, thisArg])
+```
+
+**实现：**
 ```js
 /**
- * Array.every
+ * Array.prototype.every
  * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
  * 回调函数的返回值作为条件，判断是否所有 `item` 符合；也可以反向用 `Array.some` 找一个不符合的来替代
  */
 Array.prototype._every = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var result = false;
   var i = 0;
 
   while(i < arr.length) {
-    result = Boolean(cb(arr[i], i));
+    result = Boolean(cb.call(_this, arr[i], i));
     i++;
   }
 
   return result;
 }
 
-// 测试
-var arr = [
-  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
-  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
-  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
-  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
-];
-
-var res1 = arr._every(item => item.d === 'd');
+var res1 = arr._every(function(item) {
+  console.log('this: ', this); // { a: 'aaaa' }
+  return item.d === 'd'
+}, { a: 'aaaa' });
 var res2 = arr._every(item => item.a === 'a');
 console.log(res1); // true
 console.log(res2); // false
 ```
 
-### 5.6 Array.some
+### 5.6 Array.prototype.some
 * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
 * 查找符合条件的 `item`，只找一个，返回 `Boolean`
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some):**
+```
+var hasItem = arr.some(callback(element[, index[, array]])[, thisArg])
+```
+
+**实现：**
 ```js
 /**
- * Array.some
+ * Array.prototype.some
  * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
  * 查找符合条件的 `item`，只找一个，返回 `Boolean`
  */
 Array.prototype._some = function(cb) {
   var arr = this;
+  var _this = arguments[1] || window;
   var result = false;
   var i = 0;
 
   while(i < arr.length && !result) {
-    result = Boolean(cb(arr[i], i));
+    result = Boolean(cb.call(_this, arr[i], i));
     i++;
   }
 
   return result;
 }
 
-// 测试
-var arr = [
-  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
-  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
-  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
-  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
-];
-
-var has_a1 = arr._some(item => item.a === 'a1');
+var has_a1 = arr._some(function(item) {
+  console.log('this: ', this); // { a: 'aaaa' }
+  return item.a === 'a1'
+}, { a: 'aaaa' });
 console.log(has_a1); // true
 
 var has_b = arr._some(item => item.b === 'b');
@@ -840,14 +863,20 @@ var has_b1 = arr._some(item => item.b === 'b1');
 console.log(has_b1); // true
 ```
 
-### 5.7 Array.reduce
+### 5.7 Array.prototype.reduce
 * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
 * 累计循环；两个参数，第一个为函数（其中，第一个形参为第二个参数），第二个参数可不传;
 * 回调函数的返回值作为下次回调的第二个参数，最终返回回调函数的返回值
 
+**[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce):**
+```
+var result = arr.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue])
+```
+
+**实现：**
 ```js
 /**
- * Array.reduce
+ * Array.prototype.reduce
  * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
  * 累计循环；两个参数，第一个为函数（其中，第一个形参为第二个参数），第二个参数可不传;
  * 回调函数的返回值作为下次回调的第二个参数，最终返回回调函数的返回值
@@ -868,14 +897,14 @@ Array.prototype._reduce = function() {
 
 // 求和
 var list = [1,2,3,4,5,6,7,8,9];
-var result = list._reduce((res, cur) => res + cur, 0);
+var result = list._reduce((acc, cur) => acc + cur, 0);
 console.log(result); // 45
 
 // 统计某个字符出现的次数
 var list2 = ['aa', 'bb', 'jj', 'cc', 'dd', 'aa', 'b1'];
-var result2 = list2._reduce((res, cur) => {
-  res[cur] ? res[cur]++ : res[cur] = 1;
-  return res;
+var result2 = list2._reduce((acc, cur) => {
+  acc[cur] ? acc[cur]++ : acc[cur] = 1;
+  return acc;
 }, {});
 console.log(result2); // { aa: 2, bb: 1, jj: 1, cc: 1, dd: 1 }
 ```
