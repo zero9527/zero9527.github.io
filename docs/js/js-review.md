@@ -603,7 +603,8 @@ console.log(obj3); // { a: 'a', b: { c: 'c1', e: { f: 'f' } }, d: [ 0, 1, [ 2 ] 
 
 ## 5、ES6一些数组方法的实现
 ### 5.1 Array.prototype.map
-回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
+* 将 `item`、`循环序列号` 作为两个参数传给回调函数
+* 回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
 
 **[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map):**
 ```js
@@ -616,7 +617,8 @@ var new_array = arr.map(function callback(currentValue[, index[, array]]) {
 ```js
 /**
  * Array.prototype.map
- * 回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
+  * 将 `item`、`循环序列号` 作为两个参数传给回调函数
+  * 回调函数的返回值作为 `item`，返回一个与原数组一样长度的新数组
  */
 Array.prototype._map = function(cb) {
   var arr = this;
@@ -695,7 +697,7 @@ console.log(arr);
 ```
 
 ### 5.3 Array.prototype.filter
-* 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+* 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
 * 回调函数的返回值作为条件，去过滤原数组，返回符合条件的 `item` 组成的数组
 
 **[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter):**
@@ -707,7 +709,7 @@ var newArray = arr.filter(callback(element[, index[, array]])[, thisArg])
 ```js
 /**
  * Array.prototype.filter
- * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+ * 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
  * 回调函数的返回值作为条件，去过滤原数组，返回符合条件的 `item` 组成的数组
  */
 Array.prototype._filter = function(cb) {
@@ -717,7 +719,7 @@ Array.prototype._filter = function(cb) {
   var i = 0;
 
   while(i < arr.length) {
-    var res = Boolean(cb.call(_this, arr[i], i));
+    var res = Boolean(cb.call(_this, arr[i], i, arr));
     if (res) newArr.push(arr[i]);
     i++;
   }
@@ -739,7 +741,7 @@ console.log(arr2);
 ```
 
 ### 5.4 Array.prototype.find
-* 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+* 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
 * 回调函数的返回值作为条件，只找一个，返回第一个符合条件的 `item` 
 
 **[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find):**
@@ -751,7 +753,7 @@ var item = arr.find(callback(element[, index[, array]])[, thisArg])
 ```js
 /**
  * Array.prototype.find
- * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+ * 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
  * 回调函数的返回值作为条件，只找一个，返回第一个符合条件的 `item` 
  */
 Array.prototype._find = function(cb) {
@@ -761,7 +763,7 @@ Array.prototype._find = function(cb) {
   var i = 0;
 
   while(i < arr.length && item === null) {
-    if (Boolean(cb.call(_this, arr[i], i))) {
+    if (Boolean(cb.call(_this, arr[i], i, arr))) {
       item = arr[i];
     }
     i++;
@@ -782,7 +784,7 @@ console.log(item3); // { a: 'a3', b: 'b2', c: [ 'c2' ], d: 'd' }
 ```
 
 ### 5.5 Array.prototype.every
-* 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+* 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
 * 回调函数的返回值作为条件，判断是否所有 `item` 符合；也可以反向用 `Array.some` 找一个不符合的来替代
 
 **[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every):**
@@ -794,7 +796,7 @@ var isTrue = arr.every(callback(element[, index[, array]])[, thisArg])
 ```js
 /**
  * Array.prototype.every
- * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+ * 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
  * 回调函数的返回值作为条件，判断是否所有 `item` 符合；也可以反向用 `Array.some` 找一个不符合的来替代
  */
 Array.prototype._every = function(cb) {
@@ -804,7 +806,7 @@ Array.prototype._every = function(cb) {
   var i = 0;
 
   while(i < arr.length) {
-    result = Boolean(cb.call(_this, arr[i], i));
+    result = Boolean(cb.call(_this, arr[i], i, arr));
     i++;
   }
 
@@ -821,7 +823,7 @@ console.log(res2); // false
 ```
 
 ### 5.6 Array.prototype.some
-* 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+* 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
 * 查找符合条件的 `item`，只找一个，返回 `Boolean`
 
 **[语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some):**
@@ -833,7 +835,7 @@ var hasItem = arr.some(callback(element[, index[, array]])[, thisArg])
 ```js
 /**
  * Array.prototype.some
- * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+ * 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
  * 查找符合条件的 `item`，只找一个，返回 `Boolean`
  */
 Array.prototype._some = function(cb) {
@@ -843,7 +845,7 @@ Array.prototype._some = function(cb) {
   var i = 0;
 
   while(i < arr.length && !result) {
-    result = Boolean(cb.call(_this, arr[i], i));
+    result = Boolean(cb.call(_this, arr[i], i, arr));
     i++;
   }
 
@@ -864,7 +866,7 @@ console.log(has_b1); // true
 ```
 
 ### 5.7 Array.prototype.reduce
-* 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+* 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
 * 累计循环；两个参数，第一个为函数（其中，第一个形参为第二个参数），第二个参数可不传;
 * 回调函数的返回值作为下次回调的第二个参数，最终返回回调函数的返回值
 
@@ -877,7 +879,7 @@ var result = arr.reduce(callback(accumulator, currentValue[, index[, array]])[, 
 ```js
 /**
  * Array.prototype.reduce
- * 将 `item`、`循环序列号` 作为两个参数传给回调函数；
+ * 将 `item`，`循环序列号`，`当前数组` 作为参数传给回调函数；
  * 累计循环；两个参数，第一个为函数（其中，第一个形参为第二个参数），第二个参数可不传;
  * 回调函数的返回值作为下次回调的第二个参数，最终返回回调函数的返回值
  */
