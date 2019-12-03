@@ -640,6 +640,14 @@ Array.prototype._map = function(cb) {
   return newArr;
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 var arr1 = arr._map(function(item) {
   console.log('this: ', this); // { a: 'aaaa' }
   return item.a
@@ -681,7 +689,15 @@ Array.prototype._forEach = function(cb) {
   }
 }
 
-arr.forEach(function(item) {
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
+arr._forEach(function(item) {
   console.log('this: ', this); // this:  { a: 'aaaa' }
 
   item.a = 'aa';
@@ -726,6 +742,14 @@ Array.prototype._filter = function(cb) {
 
   return newArr;
 }
+
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
 
 var arr1 = arr._filter(function(item) {
   console.log('this: ', this); // { a: 'aaaa' }
@@ -772,6 +796,14 @@ Array.prototype._find = function(cb) {
   return item;
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 var item1 = arr._find(item => item);
 var item2 = arr._find(function(item) {
   console.log('this: ', this); // { a: 'aaaa' }
@@ -813,6 +845,14 @@ Array.prototype._every = function(cb) {
   return result;
 }
 
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
+
 var res1 = arr._every(function(item) {
   console.log('this: ', this); // { a: 'aaaa' }
   return item.d === 'd'
@@ -851,6 +891,14 @@ Array.prototype._some = function(cb) {
 
   return result;
 }
+
+// 测试
+var arr = [
+  { a: 'a1', b: 'b1', c: ['c1'], d: 'd' },
+  { a: 'a2', b: 'b1', c: ['c2'], d: 'd' },
+  { a: 'a3', b: 'b2', c: ['c2'], d: 'd' },
+  { a: 'a4', b: 'b3', c: ['c3'], d: 'd' },
+];
 
 var has_a1 = arr._some(function(item) {
   console.log('this: ', this); // { a: 'aaaa' }
