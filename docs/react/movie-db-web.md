@@ -5,35 +5,102 @@
 
 [源码](https://github.com/zero9527/Movie-DB_web)，[在线预览](https://zero9527.github.io/Movie-DB_web/)
 
-## 1、关于 Class 组件、函数组件+Hooks
-### 1.1 什么时候用 函数组件+Hooks ?
-小功能组件，比如倒计时、数量加减框、评分、搜索框等等 **不涉及** 异步请求、各种监听（scroll等）的组件
-
-* React Hooks 的使用还是愉快的，简单功能的开发很省代码；
+## 1、函数组件+Hooks
+### 1.1 特点
+* 简单功能的开发很省代码；
 * `useMemo` 可以当作 `computed` 使用，`useEffect` 可以实现 `watch` 的效果，也可以有 `mount/unmount` 的效果，还有其他方便的东西
-* 基本上可以视为 Class 组件的 `render` 部分;
+* 一些周边的工具也相应更新了 类似 `Hooks` 的 `useXXX` 函数，如 `react-router` 的 `useParams`，`redux` 也有一些新的 API 如 `useSelector` 等
+* `useRef` 存储变量，修改不会导致 `render`，`useState` 也不会改变他的值，可以在渲染周期间保存变量
+* 自定义 `Hooks` 可以较大程度复用代码，如下 `useFetchData` 等
+* 其他的使用技巧，用得多了就熟能生巧了
 
 
-### 1.2 继续用 Class 组件 
+### 1.2 一些情况的处理
 #### 组件销毁前，请求还在继续～
-  * 要么 **撤销请求（axios CancelToken）**<br />
-    这个比较麻烦，要对每个请求做处理。。。
-  * 要么 在组件 unmount 前 **重写 this.setState 方法**
+* 类组件的处理方式：
+
+  在组件 `unmount` 前 **重写 this.setState 方法**
   ```js
   public componentWillUnmount() {
     // 组件销毁后，不操作数据
     this.setState = () => {};
   }
   ```
+  
+* Hooks 的处理方式
+ > 参考 [这里](https://www.robinwieruch.de/react-hooks-fetch-data)，翻到最后一个标题就是了，这篇文章也是看了这位大佬的 [文章](https://juejin.im/post/5e03fe81f265da33cd03c0fd) 05 才知道的
+  
+  使用一个标记如：`let isDestroyed = false`，`useEffect` 回调函数中返回一个函数，在这个函数内修改这个标记 `isDestroyed = true`，然后请求结束时，如果 `isDestroyed === false` 才调用 `setState` 的方法 
+
+**封装一个 `useFetchData`**
+```js
+// src/utils/useFetchData.tsx
+import * as React from 'react';
+import { AxiosResponse } from 'axios';
+
+const {useEffect, useState} = React;
+
+type Props = Promise<AxiosResponse<any>>;
+
+/**
+ * 请求数据函数的封装
+ * @param fetchFn 封装好的 axios 请求函数，看 src/api
+ */
+const UseFetchData = (fetchFn: Props) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [resData, setResData] = useState<any>();
+
+  useEffect(() => {
+    let isDestroyed = false;
+
+    const getData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await fetchFn;
+        if (!isDestroyed) {
+          setIsLoading(false);
+          setResData(res);
+        }
+      } catch(err) {
+        setIsError(true);
+      }
+    };
+
+    getData();
+
+    return () => {
+      isDestroyed = true;
+    };
+  }, []);
+
+  return {
+    isLoading,
+    isError,
+    resData
+  };
+};
+
+export default UseFetchData;
+```
+
+**UseFetchData 使用：**
+```js
+// src/views/movie-detail/index.tsx
+  const { isLoading, resData } = UseFetchData(getMovieDetail({id: params.id}));
+
+  useEffect(() => {
+    if (resData) setMovieInfo(resData);
+  }, [resData]);
+  
+// getMovieDetail 函数是这样的：
+// src/api/movie.ts
+export function getMovieDetail({ id = '' } = {}) {
+  return axios.get('/v2/movie/subject/'+id);
+}
+```
 
 #### 监听滚动
-* 函数+Hooks 写法：
-  * **useEffect 第二个参数为传空数组[]*：* 在 `_onScroll` 内 `useState` 只会起作用一次！！！很诡异（Capture Value ?）。。。
-  一开始我是这么写的，
-  * **useEffect 第二个参数不传：** 这样就可以，但是这样又会导致 **每次 state 变化** 执行一次，官方的 Demo 写法好像就是这样的。。。不知道这是不是正确的姿势！？！
-
-  可以在 [这里](https://codesandbox.io/s/react-function-component-hooks-scroll-hlxjm) 看看
-
 * Class 组件写法：
 ```js
 // src/views/home/index.tsx
@@ -50,6 +117,14 @@
     window.removeEventListener('scroll', this._onScroll);
   }
 ```
+
+* 函数+Hooks 写法：
+  * **useEffect 第二个参数为传空数组[]*：* 在 `_onScroll` 内 `useState` 只会起作用一次！！！很诡异（Capture Value ?）。。。
+  一开始我是这么写的，
+  * **useEffect 第二个参数不传：** 这样就可以，但是这样又会导致 **每次 state 变化** 执行一次，官方的 Demo 写法好像就是这样的。。。不知道这是不是正确的姿势！？！
+
+  可以在 [这里](https://codesandbox.io/s/react-function-component-hooks-scroll-hlxjm) 看看
+
 
 ## 2、列表 keep-alive
 由于 React 没有像 Vue 提供的 `<keep-alive></keep-alive>` 组件，要实现这个就自己动手来，这个在 [这里](https://juejin.im/post/5d512fa1e51d4561d41d2dbe) 已经大概说了一下

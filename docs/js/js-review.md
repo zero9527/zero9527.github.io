@@ -935,14 +935,14 @@ Array.prototype._reduce = function() {
   var arr = this;
   var i = 0;
   var cb = arguments[0];  // 第一个参数，回调函数
-  var cur = arguments[1] || null; // 第二个参数
+  var acc = arguments[1] || null; // 第二个参数
 
   while(i < arr.length) {
-    cur = cb(cur, arr[i], i, arr);
+    acc = cb(acc, arr[i], i, arr);
     i++;
   }
 
-  return cur;
+  return acc;
 }
 
 // 求和
