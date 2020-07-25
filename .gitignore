@@ -1,3 +1,4 @@
 node_modules
 
+*.zip
 zr-deploy-config.json

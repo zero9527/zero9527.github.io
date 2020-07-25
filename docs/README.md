@@ -2,19 +2,36 @@
 
 ## 一些项目
 
-- [md-note](https://github.com/zero9527/md-note): 使用 `markdown` 语法的简易博客应用，**可以替代当前小站**，[在线预览](http://zero9527.site/md-note)
-- [movie-db](https://github.com/zero9527/movie-db): 使用豆瓣电影 Api 的微信小程序，不过因为 Api 不稳定，接口偶尔会挂。。。
-- [vue-clock](https://github.com/zero9527/clock/): 基于 `Vue`+`Composition-Api`+`TypeScript`的仿真时钟，[在线预览](http://zero9527.site/vue-clock/)
-- [vue-calendar](https://github.com/zero9527/vue-calendar/): 基于 `Vue`+`Composition-Api`+`TypeScript`的日历，[在线预览](http://zero9527.site/vue-calendar/)
-- [json-util](https://github.com/zero9527/json-util): JSON 在线格式化工具
+[md-note1]: https://github.com/zero9527/md-note
+[md-note2]: http://zero9527.site/md-note
+[movie-db1]: https://github.com/zero9527/movie-db
+[vue-clock1]: https://github.com/zero9527/clock/
+[vue-clock2]: http://zero9527.site/vue-clock/
+[vue-calendar1]: https://github.com/zero9527/vue-calendar/
+[vue-calendar2]: http://zero9527.site/vue-calendar/
+[json-util1]: https://github.com/zero9527/json-util/
+[json-util2]: http://zero9527.site/json-util/
+
+- [md-note][md-note1]: 使用 `markdown` 语法的简易博客应用，**可以替代当前小站**，[在线预览][md-note2]
+- [movie-db][movie-db1]: 使用豆瓣电影 Api 的微信小程序，不过因为 Api 不稳定，接口偶尔会挂。。。
+- [vue-clock][vue-clock1]: 基于 `Vue`+`Composition-Api`+`TypeScript`的仿真时钟，[在线预览][vue-clock2]
+- [vue-calendar][vue-calendar1]: 基于 `Vue`+`Composition-Api`+`TypeScript`的日历，[在线预览][vue-calendar2]
+- [json-util][json-util1]: JSON 在线格式化工具，[在线预览][json-util2]
 
 ## 发布的 npm 包
 
-- [zr-virtual-list](https://www.npmjs.com/package/zr-virtual-list): `React` 长列表虚拟滚动，[在线预览](https://zero9527.github.io/zr-virtual-list)
-- [zr-deploy](https://www.npmjs.com/package/zr-deploy): `Node.js` 写的一个 Web 前端项目部署工具
-- [keep-alive-comp](https://www.npmjs.com/package/keep-alive-comp): `React` 组件实现 `keep-alive` 的一个实现
-- [z-calendar](https://www.npmjs.com/package/z-calendar): 生成月份日历的一个 `JS` 库
-- [position-sticky-react](https://www.npmjs.com/package/position-sticky-react): 模拟 `position:sticky` 粘性定位的一个 `React` 库
+[zr-virtual-list1]: https://www.npmjs.com/package/zr-virtual-list
+[zr-virtual-list2]: https://zero9527.github.io/zr-virtual-list
+[zr-deploy1]: https://www.npmjs.com/package/zr-deploy
+[keep-alive-comp1]: https://www.npmjs.com/package/keep-alive-comp
+[z-calendar1]: https://www.npmjs.com/package/z-calendar
+[position-sticky-react1]: https://www.npmjs.com/package/position-sticky-react
+
+- [zr-virtual-list][zr-virtual-list1]: `React` 长列表虚拟滚动，[在线预览][zr-virtual-list2]
+- [zr-deploy][zr-deploy1]: `Node.js` 写的一个 Web 前端项目部署工具
+- [keep-alive-comp][keep-alive-comp1]: `React` 组件实现 `keep-alive` 的一个实现
+- [z-calendar][z-calendar1]: 生成月份日历的一个 `JS` 库
+- [position-sticky-react][position-sticky-react1]: 模拟 `position:sticky` 粘性定位的一个 `React` 库
 
 ---
 
