@@ -1,10 +1,11 @@
-# 原生js手写实现promise
+# 原生 js 手写实现 promise
 
-### 用原生js手写实现promise，看了网上很多实现，最终写出自己的简易版promise，记录一下
+### 用原生 js 手写实现 promise，看了网上很多实现，最终写出自己的简易版 promise，记录一下
 
-> 前言：使用及调用同原生Promise方法，只实现了then(resolve),catch(reject),finally()三个方法，不涉及Promise.race(),Promise.all();
+> 前言：使用及调用同原生 Promise 方法，只实现了 then(resolve),catch(reject),finally()三个方法，不涉及 Promise.race(),Promise.all();
 
 - #### 构造函数：
+
 ```js
 let that; // 存储 mPromise
 /**
@@ -15,7 +16,7 @@ let that; // 存储 mPromise
 let config = {
   status: null,
   resolveParam: null,
-  rejectParam: null
+  rejectParam: null,
 };
 
 /**
@@ -28,7 +29,9 @@ function mPromise(callback) {
   callback(that.resolve, that.reject);
 }
 ```
+
 - #### 原型：
+
 ```js
 mPromise.prototype = {
   constructor: mPromise,
@@ -69,13 +72,14 @@ mPromise.prototype = {
     config = {
       status: null,
       resolveParam: null,
-      rejectParam: null
+      rejectParam: null,
     };
     _fn();
-  }
+  },
 };
 ```
-- #### 使用方式同原生Promise：
+
+- #### 使用方式同原生 Promise：
 
 ```js
 let f1 = function(num) {
@@ -85,23 +89,25 @@ let f1 = function(num) {
   });
 };
 ```
+
 - #### 然后调用：
+
 ```js
 f1(6)
-  .then(res => {
+  .then((res) => {
     // cc; 打开的话，会被 try catch捕获，触发catch，而不会往下走
     console.log('then: ', res); // then 6
   })
-  .catch(err => {
+  .catch((err) => {
     // 这里会捕获 then 里面的报错
     console.log('catch: ', err); // ReferenceError: cc is not defined
   });
 
 f1(11)
-  .then(res => {
+  .then((res) => {
     console.log('then: ', res);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log('catch: ', err); // catch 11
   })
   .finally(() => {
@@ -109,10 +115,10 @@ f1(11)
   });
 
 f1(12)
-  .then(res => {
+  .then((res) => {
     console.log('then: ', res);
   })
-  .catch(err => {
+  .catch((err) => {
     console.log('catch: ', err);
   })
   .finally(() => {
@@ -121,12 +127,13 @@ f1(12)
 ```
 
 #### 结果：
-> then里面不报错：
 
-![](../static/images/js-promise-1.png)
+> then 里面不报错：
 
-> then里面有报错：
+![预览图](https://s1.ax1x.com/2020/06/20/NlGAmT.png)
 
-![](../static/images/js-promise-2.png)
+> then 里面有报错：
+
+![预览图](https://s1.ax1x.com/2020/06/20/NlGek4.png)
 
 到此，结束！
